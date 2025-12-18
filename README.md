@@ -1,8 +1,101 @@
-# Guía de Evaluación Comprehensiva
+# Algoritmos Avanzados - Coloración de Grafos con GNN
 
 ## 📋 Descripción General
 
-Este sistema de evaluación te permite probar algoritmos de coloración de grafos con una metodología rigurosa, desde ejemplos simples hasta benchmarks complejos tipo SNAP y DIMACS.
+Sistema completo para resolver el problema de coloración de grafos usando Graph Neural Networks (GNN) y heurísticas clásicas. El proyecto incluye desde la carga de datos hasta la evaluación comprehensiva con benchmarks simples y complejos (SNAP, DIMACS).
+
+## 🎯 Objetivo del Proyecto
+
+Desarrollar y evaluar un modelo GNN que aprenda a ordenar vértices de manera óptima para el algoritmo greedy de coloración de grafos, comparándolo con heurísticas clásicas como Welsh-Powell, DSATUR y Largest Degree First.
+
+## 📂 Estructura del Proyecto
+
+```
+├── librerias.ipynb              # Importaciones y configuración inicial
+├── data_loader.ipynb            # Carga y preprocesamiento de grafos
+├── heuristics.ipynb             # Heurísticas clásicas de coloración
+├── gnn_model.ipynb              # Arquitectura del modelo GNN
+├── training.ipynb               # Entrenamiento del modelo
+├── evaluation.ipynb             # Evaluación básica
+├── benchmark_loader.ipynb       # Carga de benchmarks (SNAP/DIMACS)
+├── evaluation_comprehensive.ipynb  # Evaluación completa multi-dataset
+├── ejemplo_evaluacion_rapida.ipynb # Tutorial rápido
+└── README.md                    # Esta guía
+```
+
+## 🚀 Flujo de Trabajo Completo
+
+### 1️⃣ **Configuración Inicial**
+```python
+# Ejecutar primero
+%run librerias.ipynb
+```
+Carga todas las dependencias: NetworkX, PyTorch, PyTorch Geometric, NumPy, Pandas, etc.
+
+### 2️⃣ **Carga de Datos**
+```python
+%run data_loader.ipynb
+```
+**Pipeline de procesamiento:**
+- Carga grafo crudo (simulado o real)
+- Normalización (elimina lazos, duplicados)
+- Reindexación de vértices (0 a n-1)
+- Extracción de features (grado, clustering, k-core)
+- Normalización de features
+- Conversión a formato PyTorch Geometric
+
+**Output:** Objeto `data` con grafo listo para GNN
+
+### 3️⃣ **Heurísticas Clásicas**
+```python
+%run heuristics.ipynb
+```
+**Implementaciones incluidas:**
+- **Random**: Baseline con orden aleatorio
+- **Greedy Natural**: Orden natural de nodos
+- **Largest Degree First (LDF)**: Orden por grado descendente
+- **Welsh-Powell**: Variante mejorada de LDF
+- **DSATUR**: Saturación dinámica (estado del arte)
+- **Parallel Greedy**: Simulación de paralelismo
+
+**Experimentos:** Ejecuta múltiples repeticiones y calcula estadísticas
+
+### 4️⃣ **Modelo GNN**
+```python
+%run gnn_model.ipynb
+```
+**Arquitectura:**
+- 2 capas GCNConv (Graph Convolutional Network)
+- Función de activación ReLU
+- Dropout para regularización
+- Output: Score por nodo para ordenamiento
+
+**Input:** Features de nodos + estructura del grafo  
+**Output:** Ordenamiento óptimo para greedy coloring
+
+### 5️⃣ **Entrenamiento**
+```python
+%run training.ipynb
+```
+**Proceso:**
+- Generación de grafos de entrenamiento
+- Función de pérdida: Penaliza ordenamientos que resultan en más colores
+- Optimizador Adam
+- Entrenamiento por épocas con validación
+
+**Output:** Modelo entrenado listo para evaluación
+
+### 6️⃣ **Evaluación Básica**
+```python
+%run evaluation.ipynb
+```
+Compara el modelo GNN contra greedy baseline en el grafo de entrenamiento.
+
+### 7️⃣ **Evaluación Comprehensiva** ⭐
+```python
+%run evaluation_comprehensive.ipynb
+```
+Sistema completo de evaluación con múltiples benchmarks y análisis estadístico.
 
 ## 🎯 Componentes Principales
 
@@ -51,7 +144,36 @@ Sistema completo de evaluación con múltiples heurísticas.
 - Validez de la coloración
 - Estadísticas del grafo (nodos, aristas, densidad, etc.)
 
-## 🚀 Flujo de Trabajo Recomendado
+## 🎓 Inicio Rápido
+
+### Opción A: Flujo Completo (Desde Cero)
+```python
+# 1. Configuración
+%run librerias.ipynb
+
+# 2. Cargar datos
+%run data_loader.ipynb
+
+# 3. Ver heurísticas clásicas
+%run heuristics.ipynb
+
+# 4. Definir modelo GNN
+%run gnn_model.ipynb
+
+# 5. Entrenar modelo
+%run training.ipynb
+
+# 6. Evaluar
+%run evaluation.ipynb
+```
+
+### Opción B: Solo Evaluación de Benchmarks
+```python
+# Ejecutar directamente
+%run ejemplo_evaluacion_rapida.ipynb
+```
+
+## 🧪 Sistema de Evaluación con Benchmarks
 
 ### Nivel 1: Evaluación Simple (Comenzar aquí)
 ```python
@@ -265,10 +387,28 @@ grafo_snap = cargar_benchmark('snap', filepath='datasets/facebook_combined.txt')
 
 ## 📞 Próximos Pasos
 
-1. **Ejecuta `evaluation_comprehensive.ipynb` sección 8** para ver el sistema en acción
-2. **Revisa los resultados** en `resultados_simple.csv`
-3. **Analiza las visualizaciones** generadas
-4. **Escala a nivel medio** cuando estés listo
-5. **Agrega benchmarks externos** para comparación con literatura
+### Para Comenzar:
+1. **Ejecuta `ejemplo_evaluacion_rapida.ipynb`** - Tutorial interactivo
+2. **Revisa el flujo completo** ejecutando notebooks 1-6 en orden
+3. **Ejecuta `evaluation_comprehensive.ipynb`** para evaluación completa
 
-¡Buena suerte con tu evaluación! 🚀
+### Para Profundizar:
+4. **Descarga benchmarks DIMACS/SNAP** y agrégalos a la evaluación
+5. **Ajusta hiperparámetros** del modelo GNN
+6. **Genera visualizaciones** para tu reporte/tesis
+7. **Compara con literatura** usando benchmarks estándar
+
+## 🔗 Referencias
+
+- **DIMACS Benchmarks**: https://mat.tepper.cmu.edu/COLOR/instances.html
+- **SNAP Datasets**: http://snap.stanford.edu/data/
+- **PyTorch Geometric**: https://pytorch-geometric.readthedocs.io/
+
+## 📝 Notas Importantes
+
+- Los notebooks están diseñados para ejecutarse en orden secuencial
+- Cada notebook carga sus dependencias con `%run`
+- Los resultados se guardan automáticamente en CSV
+- Las visualizaciones se exportan como PNG
+
+¡Buena suerte con tu proyecto! 🚀
