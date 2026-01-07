@@ -38,6 +38,7 @@ models/
 
 # Data files
 *.csv
+!Resultados/*.csv
 *.h5
 *.hdf5
 *.pkl
